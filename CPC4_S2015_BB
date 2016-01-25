@@ -1,0 +1,429 @@
+/* A program that will calculate the cost of a gasoline/diesel powered vehicle. Collect
+information whether vehicle is new or used, number years driving, with and without surchargeable points,
+and calculate depreciation & salvage values. 
+Change several if/else statements to do/while statements.
+
+Author: Beth Barrett
+Email: bbarrett3@massasoit.edu
+Date Last Changed: April 10th 2014 
+*/
+
+import java.util.Scanner;
+
+public class CPC4_S2014_BB 
+{
+public static final int ANNUALINSPECTIONCOST = 29; //$29 Annual Inspection
+public static final int BIANNUALREGISTRATIONCOST = 50; //$50 Biannual registration
+public static final int PLATECOST = 50; //$50 One time plate fee
+
+//Assume the user will be keeping the vehicle for 5 years with a 5 year loan
+
+public static void main (String[] args) throws Exception
+{ 
+
+//Set variables
+Scanner keyboard = new Scanner(System.in);
+
+String firstName;
+String lastName;
+int vehicleYear;
+String vehicleMake;
+String vehicleModel;
+double vehiclePrice =0;
+double interestRate=0;
+double downPayment=0;
+double milesPerGallon = 0;
+double costGallonFuel = 0;
+int milesPerYear = 0;
+double salvageValue = (vehiclePrice * .10) ; //Salvage value of the vehicle at 10%
+double monthlyLoanPayment;
+double totalLoanPayments; //Total amount paid over the life of the loan
+double totalInterestPaid = 0; //Total interest paid over the life of the loan
+
+//Add new variables
+boolean vehicleIsNew;
+int numberOfYearsYouHaveBeenDriving;
+int numberOfSurchargeablePoints;
+int numberOfConsecutiveYearsWithZeroSurchargeablePoints;
+char vehicleCode = 'x';
+String vehicleDescription;
+
+//Collect Input
+System.out.println("Please enter your first name: ");
+firstName = keyboard.nextLine();
+
+System.out.println("Please enter your last name: ");
+lastName = keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter vehicle year, must be 1886 - 2014 : ");
+vehicleYear = keyboard.nextInt();
+} while  (vehicleYear <= 1886 || vehicleYear >= 2014); 
+
+keyboard.nextLine();   
+   
+System.out.println("Please enter the make of the vehicle: ");
+vehicleMake = keyboard.nextLine();
+
+System.out.println("Please enter the model of the vehicle: ");
+vehicleModel = keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter the price of the vehicle, must be > 0: ");
+vehiclePrice = keyboard.nextDouble();
+} while (vehiclePrice < 0); 
+keyboard.nextLine();
+
+ do
+{
+System.out.println("Please enter the interest rate on your loan, must be >= 0: ");
+interestRate = keyboard.nextDouble();
+} while (interestRate < 0);
+keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter the down payment you will make, must be >=0 and >=20 %");
+System.out.println(" of the purchase price if the vehicle is used.");
+downPayment = keyboard.nextDouble();
+keyboard.nextLine();   
+
+System.out.println("Is the vehicle new, please enter true or false:");
+vehicleIsNew = keyboard.nextBoolean();
+} while (vehicleIsNew = false 
+   && downPayment < 0   
+   || downPayment < vehiclePrice * .20);
+keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter the average miles per gallon, must be >= 0: ");
+milesPerGallon = keyboard.nextDouble();
+} while (milesPerGallon < 0);
+keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter the cost of gas per gallon, must be >=0: ");
+costGallonFuel = keyboard.nextDouble();
+} while (costGallonFuel < 0);
+keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter the average miles driven per year, must be >=0: ");
+milesPerYear = keyboard.nextInt();
+} while (milesPerYear < 0);     
+keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter the number of years you have been driving, must be >=0:");
+numberOfYearsYouHaveBeenDriving = keyboard.nextInt();
+} while (numberOfYearsYouHaveBeenDriving < 0);
+keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter your number of surchargeable points, must be >=0:");
+numberOfSurchargeablePoints = keyboard.nextInt();
+} while (numberOfSurchargeablePoints < 0);  
+keyboard.nextLine();
+
+do
+{
+System.out.println("Please enter the number of consective years without surchargeable points,must be >=0 ");
+numberOfConsecutiveYearsWithZeroSurchargeablePoints = keyboard.nextInt();
+} while (numberOfConsecutiveYearsWithZeroSurchargeablePoints < 0);
+keyboard.nextLine();
+
+System.out.println("Please enter the vehicle code using the chart below:");
+System.out.println("Code\t\t Description\t\t Weight");
+System.out.println("A\t\t Passenger vehicle\t 1,500-1,999 lb");
+System.out.println("B\t\t Passenger vehicle\t 2,000-2,499 lb");
+System.out.println("C\t\t Passenger vehicle\t 2,500-2,999 lb");
+System.out.println("D\t\t Passenger vehicle\t 3,000-3,499 lb");
+System.out.println("E\t\t Passenger vehicleS\t 3,500 lb and over");
+System.out.println("F\t\t SUV\t\t\t na ");
+System.out.println("G\t\t Pickup truck\t\t na ");
+System.out.println("H\t\t Van\t\t\t na ");
+vehicleCode = (char)System.in.read();
+
+switch (vehicleCode)
+{
+   case 'A':
+      System.out.println("Passenger vehicle: mini");
+      break;   
+   case 'B':
+      System.out.println("Passenger vehicle: light");
+      break;      
+   case 'C':
+      System.out.println("Passenger vehicle: compact");
+      break;   
+   case 'D':
+      System.out.println("Passenger vehicle: medium");
+      break;  
+   case 'E':
+      System.out.println("Passenger vehicle: heavy");
+      break;      
+   case 'F':
+      System.out.println("Sport utility vehicles");
+      break;      
+   case 'G':
+      System.out.println("Pickup trucks");
+      break;      
+   case 'H':
+      System.out.println("Vans");
+      break;     
+   default:
+      System.out.println("Unknown");
+      break;
+   }
+   
+keyboard.nextLine();
+
+//Monthly loan payment
+monthlyLoanPayment = (vehiclePrice - downPayment) * ((interestRate/12)/(1-Math.pow(1+(interestRate/12), -(5*12))));
+
+//Interest
+totalInterestPaid = ((monthlyLoanPayment * 60) - (vehiclePrice - downPayment))/5;
+
+//Annual Repairs and maintenance
+double repairMaintenanceYear1 = .01 * vehiclePrice; //1% of vehiclePrice in year 1
+double repairMaintenanceYear2 = .02 * vehiclePrice; //2% of vehiclePrice in year 2
+double repairMaintenanceYear3 = .03 * vehiclePrice; //3% of vehiclePrice in year 3
+double repairMaintenanceYear4 = .04 * vehiclePrice; //4% of vehiclePrice in year 4
+double repairMaintenanceYear5 = .05 * vehiclePrice; //5% of vehiclePrice in year 5
+double totalRepairMaintenance = repairMaintenanceYear1 + repairMaintenanceYear2 + repairMaintenanceYear3 +
+repairMaintenanceYear4 + repairMaintenanceYear5; 
+
+/*Useful life of asset in years = 5
+bookValue = vehiclePrice - depreciation taken in all prior years
+Double Declining Balance Depreciation = bookValue * (2* 100%/Useful Life of Asset in Years)
+Annual depreciation calculated under Double Declining Balance
+*/
+
+//Year 1
+double bookValue = vehiclePrice ;
+double depreciationYear1 = ((vehiclePrice * 2) /5);
+
+{
+if ((bookValue - depreciationYear1) < salvageValue) 
+ depreciationYear1 = bookValue - salvageValue;
+else if (depreciationYear1 < salvageValue) 
+     depreciationYear1 = salvageValue;  
+  }
+      
+double insuranceYear1 = ((vehiclePrice * .01) + (bookValue * .02)); 
+
+//Year 2
+bookValue = vehiclePrice - depreciationYear1; 
+double depreciationYear2 = ((bookValue * 2 )/5);
+
+{
+if ((bookValue - depreciationYear2) < salvageValue) 
+ depreciationYear2 = bookValue - salvageValue;
+else if (depreciationYear2 < salvageValue) 
+     depreciationYear2 = salvageValue;  
+  }
+double insuranceYear2 = ((vehiclePrice * .01) + (bookValue * .02));
+
+//Year 3
+bookValue = vehiclePrice - (depreciationYear1 + depreciationYear2);
+double depreciationYear3 = ((bookValue * 2)/5);
+
+{
+if ((bookValue - depreciationYear3) < salvageValue) 
+ depreciationYear3 = bookValue - salvageValue;
+else if (depreciationYear3 < salvageValue) 
+     depreciationYear3 = salvageValue;  
+  }
+double insuranceYear3 = ((vehiclePrice * .01) + (bookValue * .02));
+ 
+//Year 4
+bookValue = vehiclePrice - (depreciationYear1 + depreciationYear2 + depreciationYear3);
+double depreciationYear4 = ((bookValue * 2)/5);
+
+{
+if ((bookValue - depreciationYear4) < salvageValue) 
+ depreciationYear4 = bookValue - salvageValue;
+else if (depreciationYear4 < salvageValue) 
+     depreciationYear4 = salvageValue;  
+  }
+double insuranceYear4 = ((vehiclePrice * .01) + (bookValue * .02));
+
+
+//Year 5
+bookValue = vehiclePrice - (depreciationYear1 + depreciationYear2 + depreciationYear3 + depreciationYear4);
+double depreciationYear5 = ((bookValue * 2)/5);
+ {
+if ((bookValue - depreciationYear5) < salvageValue) 
+ depreciationYear5 = bookValue - salvageValue;
+else if (depreciationYear5 < salvageValue) 
+     depreciationYear5 = salvageValue;  
+  }
+double insuranceYear5 =((vehiclePrice * .01) + (bookValue * .02));
+
+
+if (numberOfYearsYouHaveBeenDriving <= 6)
+   {
+   insuranceYear1 = ((insuranceYear1) + (400 * numberOfSurchargeablePoints));
+   insuranceYear2 = ((insuranceYear2) + (400 * numberOfSurchargeablePoints));
+   insuranceYear3 = ((insuranceYear3) + (400 * numberOfSurchargeablePoints));
+   insuranceYear4 = ((insuranceYear4) + (400 * numberOfSurchargeablePoints));
+   insuranceYear5 = ((insuranceYear5) + (400 * numberOfSurchargeablePoints)); 
+   } 
+   else 
+    {
+if (numberOfYearsYouHaveBeenDriving > 6)
+   {
+   insuranceYear1 = ((insuranceYear1) + (200 * numberOfSurchargeablePoints));
+   insuranceYear2 = ((insuranceYear2) + (200 * numberOfSurchargeablePoints));
+   insuranceYear3 = ((insuranceYear3) + (200 * numberOfSurchargeablePoints));
+   insuranceYear4 = ((insuranceYear4) + (200 * numberOfSurchargeablePoints));
+   insuranceYear5 = ((insuranceYear5) + (200 * numberOfSurchargeablePoints)); 
+   }
+    }
+  
+if (numberOfConsecutiveYearsWithZeroSurchargeablePoints < 6) 
+   {
+   insuranceYear1 = (insuranceYear1 - 200);
+   insuranceYear2 = (insuranceYear2 - 200);
+   insuranceYear3 = (insuranceYear3 - 200);
+   insuranceYear4 = (insuranceYear4 - 200);
+   insuranceYear5 = (insuranceYear5 - 200); 
+   }
+    
+   else
+     {
+if (numberOfConsecutiveYearsWithZeroSurchargeablePoints > 6)
+   {  
+   insuranceYear1 = (insuranceYear1 - 400);
+   insuranceYear2 = (insuranceYear2 - 400);
+   insuranceYear3 = (insuranceYear3 - 400);
+   insuranceYear4 = (insuranceYear4 - 400);
+   insuranceYear5 = (insuranceYear5 - 400); 
+   } 
+     }
+
+//Total Depreciation and Insurance Cost
+double totalDepreciation = depreciationYear1 + depreciationYear2 + depreciationYear3 + depreciationYear4 +
+depreciationYear5 ;
+
+double totalInsuranceCost = insuranceYear1 + insuranceYear2 + insuranceYear3 + insuranceYear4 + insuranceYear5;
+
+//Annual Excise Tax
+double exciseTaxYear1 = .90 * vehiclePrice/1000 * 25;
+double exciseTaxYear2 = .60 * vehiclePrice/1000 * 25;
+double exciseTaxYear3 = .40 * vehiclePrice/1000 * 25;
+double exciseTaxYear4 = .25 * vehiclePrice/1000 * 25;
+double exciseTaxYear5 = .10 * vehiclePrice/1000 * 25;
+double totalExciseTax = exciseTaxYear1 + exciseTaxYear2 + exciseTaxYear3 + exciseTaxYear4 +
+exciseTaxYear5;
+
+//Fuel Cost
+double annualFuelCost = milesPerYear / milesPerGallon * costGallonFuel;
+double totalFuelCost = annualFuelCost * 5;
+
+//Inspection, registration, plate costs
+int totalInspectionCost = ANNUALINSPECTIONCOST * 5;
+int totalRegistrationCost = BIANNUALREGISTRATIONCOST * 3;
+int totalPlateCost = PLATECOST;
+
+
+System.out.println("Cost analysis prepared for: " + firstName + " " + lastName);
+System.out.println("The costs of buying and owning a " + vehicleYear + " " + vehicleMake + " " 
++ vehicleModel + " are as follows:");
+
+System.out.printf("Purchased for $%6.2f", vehiclePrice);
+System.out.printf(" with a down payment of $%6.2f", downPayment);
+System.out.println();
+System.out.printf("and an interest rate of %2.4f " , interestRate);
+System.out.printf("on a loan of $%6.2f", vehiclePrice - downPayment);
+System.out.println();
+System.out.printf("The monthly loan payment will be $%6.2f ", monthlyLoanPayment);
+System.out.println("per month.");
+System.out.println();
+
+//Year 1
+System.out.println("Year 1 annual additional costs will be:");
+System.out.printf("Depreciation: $%6.2f\n", depreciationYear1);
+System.out.printf("Excise Tax: $%6.2f \n" , exciseTaxYear1);
+System.out.printf("Fuel: $%6.2f\n", annualFuelCost);
+System.out.printf("Inspection Cost: $%2d\n" , ANNUALINSPECTIONCOST);
+System.out.printf("Insurance: $%6.2f\n" , insuranceYear1);
+System.out.printf("Interest: $%6.2f\n" , totalInterestPaid);
+System.out.printf("Plate: $%3d\n" , PLATECOST);
+System.out.printf("Registration: $%2d\n" , BIANNUALREGISTRATIONCOST);
+System.out.printf("Repair and Maintenance: $%6.2f\n " , repairMaintenanceYear1);
+System.out.println();
+
+//Year 2
+System.out.println("Year 2 annual additional costs will be:");
+System.out.printf("Depreciation: $%6.2f\n", depreciationYear2);
+System.out.printf("Excise Tax: $%6.2f\n" , exciseTaxYear2);
+System.out.printf("Fuel: $%6.2f\n", annualFuelCost);
+System.out.printf("Inspection Cost: $%2d\n" , ANNUALINSPECTIONCOST);
+System.out.printf("Insurance: $%6.2f\n" , insuranceYear2);
+System.out.printf("Interest: $%6.2f\n" , totalInterestPaid);
+System.out.printf("Plate: $0\n");
+System.out.printf("Registration: $0\n");
+System.out.printf("Repair and Maintenance: $%6.2f\n" , repairMaintenanceYear2);
+System.out.println();
+
+//Year 3
+System.out.println("Year 3 annual additional costs will be:");
+System.out.printf("Depreciation: $%6.2f\n", depreciationYear3);
+System.out.printf("Excise Tax: $%6.2f\n" , exciseTaxYear3);
+System.out.printf("Fuel: $%6.2f\n", annualFuelCost);
+System.out.printf("Inspection Cost: $%2d\n" , ANNUALINSPECTIONCOST);
+System.out.printf("Insurance: $%6.2f\n" , insuranceYear3);
+System.out.printf("Interest: $%6.2f\n" , totalInterestPaid);
+System.out.printf("Plate: $0\n");
+System.out.printf("Registration: $%2d\n" , BIANNUALREGISTRATIONCOST);
+System.out.printf("Repair and Maintenance: $%6.2f\n" , repairMaintenanceYear3);
+System.out.println();
+
+//Year 4
+System.out.println("Year 4 annual additional costs will be:");
+System.out.printf("Depreciation: $%6.2f\n", depreciationYear4);
+System.out.printf("Excise Tax: $%6.2f\n" , exciseTaxYear4);
+System.out.printf("Fuel: $%6.2f\n", annualFuelCost);
+System.out.printf("Inspection Cost: $%2d\n" , ANNUALINSPECTIONCOST);
+System.out.printf("Insurance: $%6.2f\n" , insuranceYear4);
+System.out.printf("Interest: $%6.2f\n" , totalInterestPaid);
+System.out.printf("Plate: $0\n");
+System.out.printf("Registration: $0\n");
+System.out.printf("Repair and Maintenance: $%6.2f\n" , repairMaintenanceYear4);
+System.out.println();
+
+//Year 5
+System.out.println("Year 5 annual additional costs will be:");
+System.out.printf("Depreciation: $%6.2f\n", depreciationYear5);
+System.out.printf("Excise Tax: $%6.2f\n" , exciseTaxYear5);
+System.out.printf("Fuel: $%6.2f\n", annualFuelCost);
+System.out.printf("Inspection Cost: $%2d\n" , ANNUALINSPECTIONCOST);
+System.out.printf("Insurance: $%6.2f\n" , insuranceYear5);
+System.out.printf("Interest: $%6.2f\n" , totalInterestPaid);
+System.out.printf("Plate: $0\n");
+System.out.printf("Registration: $%2d\n" , BIANNUALREGISTRATIONCOST);
+System.out.printf("Repair and Maintenance: $%6.2f\n" , repairMaintenanceYear5);
+System.out.println();
+
+//Summary
+System.out.println("The total costs will be:");
+System.out.printf("Total vehicle cost: $%6.2f\n" , (vehiclePrice + (totalInterestPaid * 5)));
+System.out.printf("Total depreciation cost: $%6.2f\n" , totalDepreciation);
+System.out.printf("Total excise tax cost: $%6.2f\n" ,totalExciseTax);
+System.out.printf("Total fuel cost: $%6.2f\n" , totalFuelCost);
+System.out.printf("Total inspection cost: $%3d\n" , totalInspectionCost);
+System.out.printf("Total insurance cost: $%6.2f\n" , totalInsuranceCost);
+System.out.printf("Total interest cost: $%6.2f\n" , totalInterestPaid * 5);
+System.out.printf("Total plate cost: $%2d\n" , totalPlateCost);
+System.out.printf("Total registration cost: $%3d\n " , totalRegistrationCost);
+System.out.printf("Total repair and maintenance cost: $%6.2f\n" , totalRepairMaintenance);
+
+}
+} 
